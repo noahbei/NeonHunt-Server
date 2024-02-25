@@ -7,9 +7,11 @@ require('dotenv').config()
 const mongoose = require("mongoose");
 const express = require("express");
 const Item = require("./models/item");
+const cors = require("cors")
 
 const app = express();
 app.use(express.json())
+app.use(cors())
 
 const dbURI = process.env.DATABASE_URL
 
@@ -22,9 +24,12 @@ mongoose
   )
   .catch((error) => console.log(error));
 
-app.get('/items', async (req, res)=>{
+app.get('/items/:type', async (req, res)=>{
+  console.log("requested")
     try{
-        const items = await Item.find({})
+        const type = req.params.type;
+        console.log('Type:', type);
+        const items = await Item.find({Type: type})
         res.status(200).send(items)
     }catch(error){
         res.status(500).send(error)
